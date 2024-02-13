@@ -2,9 +2,11 @@ const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgress://localhost/acme_ice_cream_db');
 const express = require('express');
 const app = express();
+const path = require('path');
+console.log(__dirname);
 
 app.get('/', (req, res, next)=> {
-    res.send('hello world');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/api/notes', async(req, res, next)=> {
