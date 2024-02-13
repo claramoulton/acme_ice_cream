@@ -11,11 +11,11 @@ app.get('/', (req, res, next)=> {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/api/notes', async(req, res, next)=> {
+app.get('/api/flavors', async(req, res, next)=> {
     try {
     const SQL = `
         SELECT *
-        FROM notes
+        FROM flavors
     `;
     const response = await client.query(SQL);
     res.send(response.rows);
@@ -25,10 +25,10 @@ app.get('/api/notes', async(req, res, next)=> {
     }
 });
 
-app.post('/api/notes', async(req, res, next)=> {
+app.post('/api/flavors', async(req, res, next)=> {
     try {
         const SQL = `
-            INSERT INTO notes(txt) VALUES($1) RETURNING *
+            INSERT INTO flavors(txt) VALUES($1) RETURNING *
         `;
         const response = await client.query(SQL, [req.body.txt]);
         res.status(201).send(response.rows[0]);
@@ -38,10 +38,10 @@ app.post('/api/notes', async(req, res, next)=> {
     }
 });
 
-app.delete('/api/notes/:id', async(req, res, next)=> {
+app.delete('/api/flavors/:id', async(req, res, next)=> {
     try {
         const SQL = `
-            DELETE FROM notes
+            DELETE FROM flavors
             WHERE id = $1
         `;
         await client.query(SQL, [req.params.id]);
@@ -52,10 +52,10 @@ app.delete('/api/notes/:id', async(req, res, next)=> {
     }
 });
 
-app.put('/api/notes/:id', async(req, res, next)=> {
+app.put('/api/flavors/:id', async(req, res, next)=> {
     try {
         const SQL = `
-            UPDATE notes
+            UPDATE flavors
             SET txt = $1
             WHERE id = $2
             RETURNING *
@@ -68,11 +68,11 @@ app.put('/api/notes/:id', async(req, res, next)=> {
     }
 });
 
-app.get('/api/notes/:id', async(req, res, next)=> {
+app.get('/api/flavors/:id', async(req, res, next)=> {
     try {
         const SQL = `
             SELECT *
-            FROM notes
+            FROM flavors
             WHERE id = $1
         `;
         const response = await client.query(SQL, [req.params.id]);
@@ -87,8 +87,8 @@ const init = async()=> {
     await client.connect();
     console.log('connected to database');
     let SQL = `
-        DROP TABLE IF EXISTS notes;
-        CREATE TABLE notes(
+        DROP TABLE IF EXISTS flavors;
+        CREATE TABLE flavors(
             id SERIAL PRIMARY KEY,
             txt VARCHAR(100) NOT NULL,
             ranking INTEGER DEFAULT 5,
@@ -98,9 +98,12 @@ const init = async()=> {
     await client.query(SQL);
     console.log('tables created');
     SQL = `
-        INSERT INTO notes(txt) VALUES ('vanilla');
-        INSERT INTO notes(txt, ranking) VALUES ('chocolate', 10);
-        INSERT INTO notes(txt, ranking) VALUES ('coffee', 1);
+        INSERT INTO flavors(txt) VALUES ('vanilla');
+        INSERT INTO flavors(txt) VALUES ('chocolate');
+        INSERT INTO flavors(txt) VALUES ('coffee');
+        INSERT INTO flavors(txt) VALUES ('moose tracks');
+        INSERT INTO flavors(txt) VALUES ('raspberry');
+        INSERT INTO flavors(txt) VALUES ('coconut');
     `;
     await client.query(SQL);
     console.log('data seeded');
