@@ -98,9 +98,9 @@ const init = async()=> {
     await client.query(SQL);
     console.log('tables created');
     SQL = `
-        INSERT INTO notes(txt) VALUES ('learn SQL');
-        INSERT INTO notes(txt, ranking) VALUES ('learn Express', 10);
-        INSERT INTO notes(txt, ranking) VALUES ('learn to bake a cake', 1);
+        INSERT INTO notes(txt) VALUES ('vanilla');
+        INSERT INTO notes(txt, ranking) VALUES ('chocolate', 10);
+        INSERT INTO notes(txt, ranking) VALUES ('coffee', 1);
     `;
     await client.query(SQL);
     console.log('data seeded');
