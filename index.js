@@ -52,6 +52,36 @@ app.delete('/api/notes/:id', async(req, res, next)=> {
     }
 });
 
+app.put('/api/notes/:id', async(req, res, next)=> {
+    try {
+        const SQL = `
+            UPDATE notes
+            SET txt = $1
+            WHERE id = $2
+            RETURNING *
+        `;
+        const response = await client.query(SQL, [req.body.txt, req.params.id]);
+        res.send(response.rows[0]);
+    }
+    catch(ex){
+        next(ex);
+    }
+});
+
+app.get('/api/notes/:id', async(req, res, next)=> {
+    try {
+        const SQL = `
+            SELECT *
+            FROM notes
+            WHERE id = $1
+        `;
+        const response = await client.query(SQL, [req.params.id]);
+        res.send(response.rows[0]);
+    }
+    catch(ex){
+        next(ex);
+    }
+});
 
 const init = async()=> {
     await client.connect();
@@ -60,7 +90,7 @@ const init = async()=> {
         DROP TABLE IF EXISTS notes;
         CREATE TABLE notes(
             id SERIAL PRIMARY KEY,
-            txt VARCHAR(100),
+            txt VARCHAR(100) NOT NULL,
             ranking INTEGER DEFAULT 5,
             created_at TIMESTAMP DEFAULT now()
         );
