@@ -1,6 +1,25 @@
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgress://localhost/acme_ice_cream_db');
+const express = require('express');
+const app = express();
 
+app.get('/', (req, res, next)=> {
+    res.send('hello world');
+});
+
+app.get('/api/notes', async(req, res, next)=> {
+    try {
+    const SQL = `
+        SELECT *
+        FROM notes
+    `;
+    const response = await client.query(SQL);
+    res.send(response.rows);
+    }
+    catch(ex){
+        next(ex);
+    }
+});
 
 const init = async()=> {
     await client.connect();
@@ -23,6 +42,9 @@ const init = async()=> {
     `;
     await client.query(SQL);
     console.log('data seeded');
+    
+    const port = process.env.PORT || 3000;
+    app.listen(port, ()=> console.log(`listening on port ${port}`));
     
 };
 
