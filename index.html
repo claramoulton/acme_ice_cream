@@ -22,24 +22,24 @@ import { createRoot } from 'react-dom/client';
 
 
 let App = function App() {
-  const [notes, setNotes] = useState([]);
+  const [flavors, setFlavors] = useState([]);
   React.useEffect(()=> {
-      const fetchNotes = async()=> {
-          const response = await fetch('/api/notes');
+      const fetchFlavors = async()=> {
+          const response = await fetch('/api/flavors');
           const json = await response.json();
-          setNotes(json);
+          setFlavors(json);
       }
-      fetchNotes();
+      fetchFlavors();
   }, [])
   return (
       <div>
-      <h1>My Notes ({ notes.length })</h1>
+      <h1>My Flavors ({ flavors.length })</h1>
       <ul>
       {
-          notes.map((note)=> {
+          flavors.map((flavor)=> {
               return (
-                  <li key={ note.id }>
-                    { note.txt }
+                  <li key={ flavor.id }>
+                    { flavor.txt }
                   </li>
               );
           })
